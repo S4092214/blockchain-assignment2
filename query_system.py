@@ -23,7 +23,6 @@ class SecureQuerySystem:
             PROCUREMENT_OFFICER_KEY["e"],
         )
 
-        # PKG derives each inventory's shadow identity from its public identity.
         self.shadow_identities = {
             node_id: pow(identity, self.pkg["d"], self.pkg["n"])
             for node_id, identity in INVENTORY_IDENTITIES.items()
@@ -43,21 +42,18 @@ class SecureQuerySystem:
                 "item_id": item_id,
                 "status": "REJECTED",
                 "reason": "Nodes returned inconsistent quantities.",
-                "quantities": quantities,
             }
         elif values[0] is None:
             result = {
                 "item_id": item_id,
                 "status": "NOT_FOUND",
                 "quantity": None,
-                "quantities": quantities,
             }
         else:
             result = {
                 "item_id": item_id,
                 "status": "APPROVED",
                 "quantity": values[0],
-                "quantities": quantities,
             }
 
         return result

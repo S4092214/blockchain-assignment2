@@ -38,6 +38,8 @@ def demo_record_insertion(nodes):
     print("\nDigital signature:")
     print(signed_record["signature"])
 
+    print("\nEach inventory node verifies the digital signature before voting.")
+    
     consensus = ConsensusEngine(nodes)
     outcome = consensus.run_record_consensus(signed_record)
 
@@ -57,27 +59,28 @@ def demo_record_retrieval(nodes):
     item_id = "002"
     query_system = SecureQuerySystem(nodes)
 
+    print("\nStep 1: Authorised user submits query for item", item_id)
+
     result = query_system.run_secure_query(item_id)
 
-    print("Query item:", item_id)
+    print("\nStep 2: Inventory A, B, C and D retrieve local data")
 
-    print("\nQuery result:")
-    print(result["query_message"])
+    print("\nStep 3: Each node generates a partial signature")
+    print("4 nodes participated")
 
-    print("\nPartial signatures:")
-    print("Inventory A, B, C and D each signed the query result.")
+    print("\nStep 4: Partial signatures are combined")
+    print("Aggregate signature:", result["aggregate_signature"])
 
-    print("\nAggregate signature:")
-    print(result["aggregate_signature"])
-
-    print("\nMulti-signature verification:")
+    print("\nStep 5: Multi-signature verification result:")
     print(result["verification"]["valid"])
 
-    print("\nEncrypted response blocks shown in hex:")
-    print([hex(block) for block in result["encrypted_blocks"][:5]])
+    print("\nStep 6: Response encrypted for the user")
+    print("Encrypted blocks (hex):", [hex(b) for b in result["encrypted_blocks"][:5]])
 
-    print("\nRecovered response after decryption:")
-    print(result["recovered_response"])
+    print("\nStep 7: User decrypts and verifies the result")
+
+    print("\nFinal result:")
+    print(result["recovered_response"]["result"])
 
 
 def main():
