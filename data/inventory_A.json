@@ -22,5 +22,11 @@
     "quantity": 12,
     "price": 18,
     "location": "A"
+  },
+  {
+    "item_id": "12",
+    "quantity": 1,
+    "price": 20.0,
+    "location": "A"
   }
 ]

@@ -20,17 +20,25 @@ def build_nodes():
 def demo_record_insertion(nodes):
     print("\n--- Secure Record Insertion ---")
 
+    while True:
+        node_choice = input("Choose originating inventory (A/B/C/D): ").strip().upper()
+
+        if node_choice in ["A", "B", "C", "D"]:
+            break
+        else:
+            print("Invalid choice. Please enter A, B, C or D.")
+
     record = {
-        "item_id": "004",
-        "quantity": 12,
-        "price": 18,
-        "location": "A"
+        "item_id": input("Item ID: "),
+        "quantity": int(input("Quantity: ")),
+        "price": float(input("Price: ")),
+        "location": node_choice
     }
 
-    print("New record:", record)
-    print("Originating node: Inventory A")
+    print("\nNew record:", record)
+    print("Originating node: Inventory", node_choice)
 
-    signed_record = nodes["A"].sign_record(record)
+    signed_record = nodes[node_choice].sign_record(record)
 
     print("\nHash:")
     print(signed_record["hash_hex"])
