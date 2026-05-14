@@ -26,6 +26,20 @@ PART1_KEYS = {
     },
 }
 
+PART2_KEYS = {
+    "PKG": {
+        "p": 61,
+        "q": 53,
+        "e": 17
+    },
+
+    "USER": {
+        "p": 47,
+        "q": 59,
+        "e": 17
+    }
+}
+
 PKG_KEY = {
     "p": 1004162036461488639338597000466705179253226703,
     "q": 950133741151267522116252385927940618264103623,
@@ -51,3 +65,79 @@ INVENTORY_RANDOM_VALUES = {
     "C": 821,
     "D": 921,
 }
+
+import os
+import json
+from math import gcd
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+KEY_DIR = os.path.join(BASE_DIR, "keys")
+
+
+def mod_inverse(e, phi):
+    return pow(e, -1, phi)
+
+
+def build_rsa_key_file(name, p, q, e):
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    d = mod_inverse(e, phi)
+
+    return {
+        "name": name,
+        "p": p,
+        "q": q,
+        "e": e,
+        "n": n,
+        "phi": phi,
+        "d": d
+    }
+
+
+def save_key_files():
+    os.makedirs(KEY_DIR, exist_ok=True)
+
+    key_files = {
+        "inventory_A_keys.json": build_rsa_key_file(
+            "Inventory A",
+            PART1_KEYS["A"]["p"],
+            PART1_KEYS["A"]["q"],
+            PART1_KEYS["A"]["e"]
+        ),
+        "inventory_B_keys.json": build_rsa_key_file(
+            "Inventory B",
+            PART1_KEYS["B"]["p"],
+            PART1_KEYS["B"]["q"],
+            PART1_KEYS["B"]["e"]
+        ),
+        "inventory_C_keys.json": build_rsa_key_file(
+            "Inventory C",
+            PART1_KEYS["C"]["p"],
+            PART1_KEYS["C"]["q"],
+            PART1_KEYS["C"]["e"]
+        ),
+        "inventory_D_keys.json": build_rsa_key_file(
+            "Inventory D",
+            PART1_KEYS["D"]["p"],
+            PART1_KEYS["D"]["q"],
+            PART1_KEYS["D"]["e"]
+        ),
+        "pkg_keys.json": build_rsa_key_file(
+            "PKG",
+            PART2_KEYS["PKG"]["p"],
+            PART2_KEYS["PKG"]["q"],
+            PART2_KEYS["PKG"]["e"]
+        ),
+        "user_keys.json": build_rsa_key_file(
+            "Procurement Officer",
+            PART2_KEYS["USER"]["p"],
+            PART2_KEYS["USER"]["q"],
+            PART2_KEYS["USER"]["e"]
+        ),
+    }
+
+    for filename, data in key_files.items():
+        path = os.path.join(KEY_DIR, filename)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4)

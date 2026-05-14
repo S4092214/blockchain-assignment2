@@ -41,7 +41,10 @@ class ConsensusEngine:
         return {
             "votes": votes,
             "yes_votes": yes_votes,
+            "total_nodes": len(self.nodes),
             "threshold": self.threshold,
+            "consensus_type": "PBFT / BFT",
+            "fault_tolerance": "System tolerates 1 faulty node out of 4",
             "decision": "ACCEPTED" if decision else "REJECTED",
             "details": details,
         }
