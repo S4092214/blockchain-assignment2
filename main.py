@@ -4,6 +4,9 @@ from query_system import SecureQuerySystem
 from keys import PART1_KEYS, save_key_files
 import os
 
+def short(value):
+    value = str(value)
+    return value[:35] + "..." if len(value) > 35 else value
 
 def build_nodes():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -45,12 +48,29 @@ def demo_record_insertion(nodes):
     print("SHA-256(record) =")
     print(signed_record["hash_hex"])
 
-    print("\nStep 3: RSA Digital Signature")
-    print("signature = hash^d mod n")
-    print("Digital signature:")
-    print(signed_record["signature"])
+    key = PART1_KEYS[node_choice]
+    p = key["p"]
+    q = key["q"]
+    e = key["e"]
+    n = p * q
+    phi = (p - 1) * (q - 1)
+    d = pow(e, -1, phi)
+    hash_int = int(signed_record["hash_hex"], 16)
 
-    print("\nStep 4: Signature Verification")
+    print("\nStep 3: RSA Digital Signature Working Out")
+    print("n = p × q =", short(n))
+    print("phi = (p - 1)(q - 1) =", short(phi))
+    print("d = e^-1 mod phi =", short(d))
+    print("hash_int = int(hash, 16) =", short(hash_int))
+    print("signature = hash_int^d mod n")
+    print("Digital signature =", short(signed_record["signature"]))
+
+    verification_value = pow(signed_record["signature"], e, n)
+
+    print("\nStep 4: Signature Verification Working Out")
+    print("verification = signature^e mod n")
+    print("verification result =", short(verification_value))
+    print("original hash_int =", short(hash_int))
     print("Each inventory node verifies the digital signature before voting.")
 
     consensus = ConsensusEngine(nodes)
@@ -93,8 +113,12 @@ def demo_record_retrieval(nodes):
     print("Aggregate signature:")
     print(result["aggregate_signature"])
 
-    print("\nStep 5: Multi-Signature Verification")
-    print("Verification equation checks whether the aggregate signature is valid.")
+    print("\nStep 5: Multi-Signature Verification Working Out")
+    print("The system checks whether:")
+    print("left = s^e mod n")
+    print("right = (ID_A × ID_B × ID_C × ID_D) × t^H(t,m) mod n")
+    print("left =", short(result["verification"]["left_S_power_e"]))
+    print("right =", short(result["verification"]["right_expected_value"]))
     print("Verification result:", result["verification"]["valid"])
 
     print("\nStep 6: Secure Delivery")
