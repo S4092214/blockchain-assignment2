@@ -58,6 +58,7 @@ def demo_record_insertion(nodes):
     hash_int = int(signed_record["hash_hex"], 16)
 
     print("\nStep 3: RSA Digital Signature Working Out")
+    print("Performed by: Inventory", node_choice)
     print("n = p × q =", short(n))
     print("phi = (p - 1)(q - 1) =", short(phi))
     print("d = e^-1 mod phi =", short(d))
@@ -68,6 +69,7 @@ def demo_record_insertion(nodes):
     verification_value = pow(signed_record["signature"], e, n)
 
     print("\nStep 4: Signature Verification Working Out")
+    print("Performed by: Inventory A, B, C and D")
     print("verification = signature^e mod n")
     print("verification result =", short(verification_value))
     print("original hash_int =", short(hash_int))
@@ -77,6 +79,7 @@ def demo_record_insertion(nodes):
     outcome = consensus.run_record_consensus(signed_record)
 
     print("\nStep 5: Byzantine Fault Tolerant (BFT) Consensus")
+    print("Performed by: all inventory nodes")
     print("Consensus type:", outcome["consensus_type"])
     print("Threshold:", outcome["threshold"])
     print("Votes:", outcome["votes"])
@@ -97,23 +100,28 @@ def demo_record_retrieval(nodes):
     query_system = SecureQuerySystem(nodes)
 
     print("\nStep 1: Authorised User Query")
+    print("Performed by: Procurement Officer")
     print("The authorised user submits a query for item", item_id)
 
     result = query_system.run_secure_query(item_id)
 
     print("\nStep 2: Local Record Retrieval")
+    print("Performed by: Inventory A, B, C and D")
     print("Inventory A, B, C and D retrieve the quantity from local records.")
 
     print("\nStep 3: Partial Signature Generation")
+    print("Performed by: Inventory A, B, C and D")
     print("Each inventory node signs the query result.")
     print("Participating nodes: A, B, C, D")
 
     print("\nStep 4: Multi-Signature Aggregation")
+    print("Performed by: secure query system / PKG simulation")
     print("Partial signatures are combined into one aggregate signature.")
     print("Aggregate signature:")
     print(result["aggregate_signature"])
 
     print("\nStep 5: Multi-Signature Verification Working Out")
+    print("Performed by: secure query system / PKG simulation")
     print("The system checks whether:")
     print("left = s^e mod n")
     print("right = (ID_A × ID_B × ID_C × ID_D) × t^H(t,m) mod n")
@@ -122,11 +130,13 @@ def demo_record_retrieval(nodes):
     print("Verification result:", result["verification"]["valid"])
 
     print("\nStep 6: Secure Delivery")
+    print("Performed by: secure query system using the user's public key")
     print("The verified response is encrypted using the user's public key.")
     print("Encrypted blocks shown in hex:")
     print([hex(block) for block in result["encrypted_blocks"][:5]])
 
     print("\nStep 7: User Recovery")
+    print("Performed by: Procurement Officer using private key")
     print("The user decrypts the response using their private key.")
 
     print("\nFinal approved result:")
